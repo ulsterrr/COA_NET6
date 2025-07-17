@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRole(Guid id)
+        public async Task<IActionResult> GetRole(int id)
         {
             return this.FromResponse<IResponse>(await _mediator.Send(new GetRoleByIdQuery(id)));
         }
@@ -46,13 +46,13 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveRole(Guid id)
+        public async Task<IActionResult> RemoveRole(int id)
         {
             return this.FromResponse<IResponse>(await _mediator.Send(new RemoveRoleCommand(id)));
         }
 
         [HttpGet("getrolesbyuserid/{userid}")]
-        public async Task<IActionResult> GetRolesByUserId(Guid userid)
+        public async Task<IActionResult> GetRolesByUserId(int userid)
         {
             return this.FromResponse<IResponse>(await _mediator.Send(new GetRolesByUserIdQuery(userid)));
         }

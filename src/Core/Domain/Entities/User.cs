@@ -2,7 +2,7 @@
 
 namespace Domain.Entities
 {
-    public class User : BaseEntity<Guid>
+    public class User : BaseEntity<int>
     {
         public string UserName { get; set; }
         public string FirstName { get; set; }
@@ -15,5 +15,8 @@ namespace Domain.Entities
         public string EmailConfirmationCode { get; set; }
         public string EmailConfirmedCode { get; set; }
         public string ResetPasswordCode { get; set; }
+
+        // Added Roles property to get list of role names
+        public List<string> Roles => UserRoles?.Select(ur => ur.Role.Name).ToList() ?? new List<string>();
     }
 }

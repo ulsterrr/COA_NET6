@@ -11,13 +11,13 @@ namespace Application.Features.Users.Queries
 {
     public class GetAuthenticatedUserWithRolesQuery : IRequest<IResponse>, ICacheable
     {
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
 
         public bool BypassCache => false;
 
         public string CacheKey => $"GetAuthenticatedUserWithRoles-{UserId}";
 
-        public GetAuthenticatedUserWithRolesQuery(Guid userId)
+        public GetAuthenticatedUserWithRolesQuery(int userId)
         {
             UserId = userId;
         }

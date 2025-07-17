@@ -1,10 +1,15 @@
 ﻿using Application.Features.Roles.Queries;
 using Application.Features.Users.Commands;
+using Application.Features.Users.Commands;
+using Application.Features.Users.Commands;
+using Application.Features.Users.Queries;
 using Application.Features.Users.Queries;
 using Application.Wrappers.Abstract;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using WebAPI.Infrastructure.Extensions;
 
 namespace WebAPI.Controllers
@@ -27,6 +32,12 @@ namespace WebAPI.Controllers
             return this.FromResponse<IResponse>(await _mediator.Send(new GetAllUsersWithRolesQuery()));
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("cached")]
+        public async Task<IActionResult> GetAllUsersWithRolesCached()
+        {
+            return this.FromResponse<IResponse>(await _mediator.Send(new GetAllUsersWithRolesWithCacheQuery()));
+        }
 
         [HttpGet("confirmemail/{code}")]
         public async Task<IActionResult> ConfirmEmail(string code)
@@ -34,10 +45,16 @@ namespace WebAPI.Controllers
             return this.FromResponse<IResponse>(await _mediator.Send(new ConfirmEmailCommand(code)));
         }
 
-
         [Authorize(Roles = "Admin")]
         [HttpPut("updateuserrole")]
         public async Task<IActionResult> UpdateUserRole(UpdateUserRoleCommand command)
+        {
+            return this.FromResponse<IResponse>(await _mediator.Send(command));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("assignuserroles")]
+        public async Task<IActionResult> AssignUserRoles(AssignUserRolesCommand command)
         {
             return this.FromResponse<IResponse>(await _mediator.Send(command));
         }
@@ -80,7 +97,7 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{userid}")]
-        public async Task<IActionResult> DeleteUser(Guid userid)
+        public async Task<IActionResult> DeleteUser(int userid)
         {
             return this.FromResponse<IResponse>(await _mediator.Send(new RemoveUserCommand(userid)));
         }

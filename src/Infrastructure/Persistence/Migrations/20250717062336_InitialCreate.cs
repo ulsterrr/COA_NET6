@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class InitialCreate_Migration_SqlServer : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,9 +15,14 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Expiration = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Expiration = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Enable = table.Column<bool>(type: "bit", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,8 +33,14 @@ namespace Persistence.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
+                    Enable = table.Column<bool>(type: "bit", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,7 +51,8 @@ namespace Persistence.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -50,7 +62,12 @@ namespace Persistence.Migrations
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     EmailConfirmationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailConfirmedCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ResetPasswordCode = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ResetPasswordCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Enable = table.Column<bool>(type: "bit", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -61,8 +78,8 @@ namespace Persistence.Migrations
                 name: "UserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,18 +100,18 @@ namespace Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Roles",
-                columns: new[] { "Id", "Name" },
-                values: new object[] { new Guid("43db034a-98cc-42ee-8fff-c57016484f4d"), "Admin" });
+                columns: new[] { "Id", "CreatedBy", "CreatedOn", "Enable", "ModifiedBy", "ModifiedOn", "Name" },
+                values: new object[] { 1, null, null, null, null, null, "Admin" });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "EmailConfirmationCode", "EmailConfirmed", "EmailConfirmedCode", "FirstName", "LastName", "PasswordHash", "PasswordSalt", "ResetPasswordCode", "UserName" },
-                values: new object[] { new Guid("6e5d8fa8-fa96-419f-9c07-3e05b96b087e"), "defaultadmin@gmail.com", null, true, null, "Default", "Admin", new byte[] { 236, 216, 90, 190, 97, 167, 42, 227, 36, 101, 16, 219, 9, 62, 55, 237, 19, 168, 141, 230, 174, 74, 192, 59, 10, 221, 17, 201, 127, 234, 214, 186, 139, 34, 79, 200, 18, 124, 252, 145, 181, 174, 218, 210, 234, 12, 43, 27, 105, 236, 104, 144, 154, 196, 182, 195, 5, 32, 207, 7, 246, 211, 136, 75 }, new byte[] { 39, 94, 53, 253, 82, 216, 94, 220, 203, 172, 192, 184, 170, 203, 232, 20, 201, 234, 147, 90, 147, 51, 81, 25, 95, 110, 121, 191, 176, 197, 83, 192, 159, 170, 207, 125, 187, 154, 209, 216, 110, 50, 6, 137, 90, 173, 54, 192, 15, 193, 27, 179, 110, 192, 57, 124, 25, 12, 222, 115, 49, 33, 168, 70, 161, 163, 72, 88, 136, 225, 235, 182, 127, 230, 90, 211, 245, 91, 131, 184, 94, 199, 152, 74, 176, 115, 160, 122, 12, 137, 59, 142, 186, 58, 189, 223, 134, 3, 47, 200, 11, 200, 226, 217, 35, 118, 104, 109, 226, 207, 56, 91, 171, 4, 53, 123, 2, 155, 212, 184, 185, 58, 197, 126, 217, 65, 188, 52 }, null, "admin" });
+                columns: new[] { "Id", "CreatedBy", "CreatedOn", "Email", "EmailConfirmationCode", "EmailConfirmed", "EmailConfirmedCode", "Enable", "FirstName", "LastName", "ModifiedBy", "ModifiedOn", "PasswordHash", "PasswordSalt", "ResetPasswordCode", "UserName" },
+                values: new object[] { 1, null, null, "defaultadmin@gmail.com", null, true, null, null, "Default", "Admin", null, null, new byte[] { 187, 73, 111, 127, 170, 140, 69, 53, 72, 14, 54, 32, 127, 93, 88, 168, 240, 33, 148, 242, 186, 225, 192, 95, 23, 108, 151, 114, 222, 161, 4, 64, 58, 213, 129, 235, 77, 112, 246, 71, 227, 22, 113, 128, 203, 222, 244, 98, 118, 186, 92, 247, 204, 246, 252, 36, 190, 32, 95, 151, 28, 240, 251, 23 }, new byte[] { 247, 194, 70, 146, 71, 141, 185, 175, 3, 63, 243, 21, 194, 97, 77, 185, 79, 100, 180, 62, 29, 189, 32, 206, 17, 165, 90, 179, 76, 7, 186, 25, 80, 185, 110, 138, 156, 163, 185, 65, 24, 200, 6, 8, 128, 130, 52, 133, 213, 218, 229, 254, 60, 254, 46, 70, 153, 161, 64, 167, 154, 127, 35, 68, 75, 14, 62, 87, 177, 46, 245, 160, 173, 58, 99, 58, 158, 233, 158, 190, 80, 205, 29, 27, 12, 208, 169, 113, 233, 202, 1, 184, 133, 205, 156, 165, 144, 224, 166, 128, 135, 17, 17, 145, 243, 112, 251, 234, 184, 110, 166, 73, 159, 60, 94, 206, 122, 226, 22, 95, 226, 196, 57, 85, 113, 12, 79, 146 }, null, "admin" });
 
             migrationBuilder.InsertData(
                 table: "UserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("43db034a-98cc-42ee-8fff-c57016484f4d"), new Guid("6e5d8fa8-fa96-419f-9c07-3e05b96b087e") });
+                values: new object[] { 1, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",

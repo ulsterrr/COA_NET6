@@ -6,13 +6,13 @@ using Persistence.Context;
 
 namespace Persistence.Repositories
 {
-    public class RoleRepository : EfEntityRepository<Role, CAContext, Guid>, IRoleRepository
+    public class RoleRepository : EfEntityRepository<Role, CAContext, int>, IRoleRepository
     {
         public RoleRepository(CAContext context) : base(context)
         {
         }
 
-        public async Task<IEnumerable<RoleDTO>> GetRolesByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<RoleDTO>> GetRolesByUserIdAsync(int userId)
         {
             return await _context.Roles.Where(r => r.UserRoles.Any(ur => ur.UserId == userId)).Select(role => new RoleDTO
             {

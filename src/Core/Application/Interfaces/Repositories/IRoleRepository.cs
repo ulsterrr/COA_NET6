@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.Repositories
 {
-    public interface IRoleRepository : IRepository<Role, Guid>
+    public interface IRoleRepository : IRepository<Role, int>
     {
-        Task<IEnumerable<RoleDTO>> GetRolesByUserIdAsync(Guid userId);
+        Task<IEnumerable<RoleDTO>> GetRolesByUserIdAsync(int userId);
     }
 }
         

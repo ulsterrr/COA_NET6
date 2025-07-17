@@ -12,9 +12,9 @@ namespace Application.Features.Roles.Queries
 {
     public class GetRoleByIdQuery : IRequest<IResponse>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
-        public GetRoleByIdQuery(Guid id)
+        public GetRoleByIdQuery(int id)
         {
             Id = id;
         }

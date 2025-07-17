@@ -13,12 +13,12 @@ namespace Persistence.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            const string AdminRoleId = "43db034a-98cc-42ee-8fff-c57016484f4d";
+            const string AdminRoleId = "1";
             builder.Property(r => r.Name).IsRequired().HasMaxLength(16);
             builder.HasData(
                 new Role
                 {
-                    Id = Guid.Parse(AdminRoleId),
+                    Id = int.Parse(AdminRoleId),
                     Name = "Admin"
                 }
             );

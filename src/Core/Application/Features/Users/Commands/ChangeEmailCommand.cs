@@ -16,11 +16,11 @@ namespace Application.Features.Users.Commands
     public class ChangeEmailCommand : IRequest<IResponse>
     {
         [JsonIgnore]
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
 
         public string Email { get; set; }
 
-        public ChangeEmailCommand(Guid userid, string email)
+        public ChangeEmailCommand(int userid, string email)
         {
             UserId = userid;
             Email = email;

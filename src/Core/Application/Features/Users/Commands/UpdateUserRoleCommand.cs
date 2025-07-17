@@ -11,8 +11,8 @@ namespace Application.Features.Users.Commands
 {
     public class UpdateUserRoleCommand : IRequest<IResponse>
     {
-        public Guid UserId { get; set; }
-        public Guid[] RoleIds { get; set; }
+        public int UserId { get; set; }
+        public int[] RoleIds { get; set; }
 
 
         public class UpdateUserRoleCommandHandler : IRequestHandler<UpdateUserRoleCommand, IResponse>

@@ -12,8 +12,8 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(CAContext))]
-    [Migration("20250716170956_InitialCreate_Migration_SqlServer")]
-    partial class InitialCreate_Migration_SqlServer
+    [Migration("20250717062336_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,11 +35,26 @@ namespace Persistence.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("Enable")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("Expiration")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -48,9 +63,26 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Role", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("Enable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -64,16 +96,24 @@ namespace Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("43db034a-98cc-42ee-8fff-c57016484f4d"),
+                            Id = 1,
                             Name = "Admin"
                         });
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -88,6 +128,9 @@ namespace Persistence.Migrations
                     b.Property<string>("EmailConfirmedCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool?>("Enable")
+                        .HasColumnType("bit");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -97,6 +140,12 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
@@ -121,24 +170,24 @@ namespace Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6e5d8fa8-fa96-419f-9c07-3e05b96b087e"),
+                            Id = 1,
                             Email = "defaultadmin@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Default",
                             LastName = "Admin",
-                            PasswordHash = new byte[] { 236, 216, 90, 190, 97, 167, 42, 227, 36, 101, 16, 219, 9, 62, 55, 237, 19, 168, 141, 230, 174, 74, 192, 59, 10, 221, 17, 201, 127, 234, 214, 186, 139, 34, 79, 200, 18, 124, 252, 145, 181, 174, 218, 210, 234, 12, 43, 27, 105, 236, 104, 144, 154, 196, 182, 195, 5, 32, 207, 7, 246, 211, 136, 75 },
-                            PasswordSalt = new byte[] { 39, 94, 53, 253, 82, 216, 94, 220, 203, 172, 192, 184, 170, 203, 232, 20, 201, 234, 147, 90, 147, 51, 81, 25, 95, 110, 121, 191, 176, 197, 83, 192, 159, 170, 207, 125, 187, 154, 209, 216, 110, 50, 6, 137, 90, 173, 54, 192, 15, 193, 27, 179, 110, 192, 57, 124, 25, 12, 222, 115, 49, 33, 168, 70, 161, 163, 72, 88, 136, 225, 235, 182, 127, 230, 90, 211, 245, 91, 131, 184, 94, 199, 152, 74, 176, 115, 160, 122, 12, 137, 59, 142, 186, 58, 189, 223, 134, 3, 47, 200, 11, 200, 226, 217, 35, 118, 104, 109, 226, 207, 56, 91, 171, 4, 53, 123, 2, 155, 212, 184, 185, 58, 197, 126, 217, 65, 188, 52 },
+                            PasswordHash = new byte[] { 187, 73, 111, 127, 170, 140, 69, 53, 72, 14, 54, 32, 127, 93, 88, 168, 240, 33, 148, 242, 186, 225, 192, 95, 23, 108, 151, 114, 222, 161, 4, 64, 58, 213, 129, 235, 77, 112, 246, 71, 227, 22, 113, 128, 203, 222, 244, 98, 118, 186, 92, 247, 204, 246, 252, 36, 190, 32, 95, 151, 28, 240, 251, 23 },
+                            PasswordSalt = new byte[] { 247, 194, 70, 146, 71, 141, 185, 175, 3, 63, 243, 21, 194, 97, 77, 185, 79, 100, 180, 62, 29, 189, 32, 206, 17, 165, 90, 179, 76, 7, 186, 25, 80, 185, 110, 138, 156, 163, 185, 65, 24, 200, 6, 8, 128, 130, 52, 133, 213, 218, 229, 254, 60, 254, 46, 70, 153, 161, 64, 167, 154, 127, 35, 68, 75, 14, 62, 87, 177, 46, 245, 160, 173, 58, 99, 58, 158, 233, 158, 190, 80, 205, 29, 27, 12, 208, 169, 113, 233, 202, 1, 184, 133, 205, 156, 165, 144, 224, 166, 128, 135, 17, 17, 145, 243, 112, 251, 234, 184, 110, 166, 73, 159, 60, 94, 206, 122, 226, 22, 95, 226, 196, 57, 85, 113, 12, 79, 146 },
                             UserName = "admin"
                         });
                 });
 
             modelBuilder.Entity("Domain.Entities.UserRole", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -149,8 +198,8 @@ namespace Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("6e5d8fa8-fa96-419f-9c07-3e05b96b087e"),
-                            RoleId = new Guid("43db034a-98cc-42ee-8fff-c57016484f4d")
+                            UserId = 1,
+                            RoleId = 1
                         });
                 });
 

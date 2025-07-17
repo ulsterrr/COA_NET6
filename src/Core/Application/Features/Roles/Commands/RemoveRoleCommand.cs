@@ -10,9 +10,9 @@ namespace Application.Features.Roles.Commands
 {
     public class RemoveRoleCommand : IRequest<IResponse>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
-        public RemoveRoleCommand(Guid id)
+        public RemoveRoleCommand(int id)
         {
             Id = id;
         }

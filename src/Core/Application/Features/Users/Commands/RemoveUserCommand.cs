@@ -15,9 +15,9 @@ namespace Application.Features.Users.Commands
 {
     public class RemoveUserCommand : IRequest<IResponse>
     {
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
 
-        public RemoveUserCommand(Guid userid)
+        public RemoveUserCommand(int userid)
         {
             UserId = userid;
         }

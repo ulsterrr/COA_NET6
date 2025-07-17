@@ -1,6 +1,8 @@
 using Application;
 using FluentValidation.AspNetCore;
 using Infrastructure;
+using Infrastructure.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -10,6 +12,7 @@ using Persistence;
 using Persistence.Context;
 using Serilog;
 using System.Text.Json.Serialization;
+using WebAPI.Infrastructure.Authorization;
 using WebAPI.Infrastructure.Extensions;
 using WebAPI.Infrastructure.Filters;
 
@@ -67,6 +70,21 @@ builder.Services.AddSwaggerGen(c =>
                 });
 });
 builder.Services.ConfigureAuth(builder.Configuration);
+
+// Register PermissionAuthorizationHandler and add authorization policies
+
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+builder.Services.AddAuthorization(options =>
+{
+    // Clear existing policies
+    options.InvokeHandlersAfterFailure = false;
+});
+
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, DynamicAuthorizationPolicyProvider>();
+
+// Add a hosted service or background service to refresh policies cache if needed
+
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
@@ -98,6 +116,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
 app.UseCustomExceptionMiddleware();
 app.UseAuthentication();
 app.UseCors(builder =>

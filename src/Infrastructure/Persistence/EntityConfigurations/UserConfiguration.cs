@@ -10,7 +10,7 @@ namespace Persistence.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            const string DefaultAdminUserId = "6e5d8fa8-fa96-419f-9c07-3e05b96b087e";
+            const string DefaultAdminUserId = "1";
 
             builder.Property(u => u.UserName)
                 .HasMaxLength(50)
@@ -33,7 +33,7 @@ namespace Persistence.EntityConfigurations
             builder.HasData(
                 new User
                 {
-                    Id = Guid.Parse(DefaultAdminUserId),
+                    Id = int.Parse(DefaultAdminUserId),
                     UserName = "admin",
                     FirstName = "Default",
                     LastName = "Admin",

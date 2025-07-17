@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.Repositories
 {
-    public interface IUserRepository : IRepository<User,Guid>
+    public interface IUserRepository : IRepository<User,int>
     {
-        Task<UserDTO> GetUserWithRolesAsync(Guid userid);
+        Task<UserDTO> GetUserWithRolesAsync(int userid);
         Task<IEnumerable<UserDTO>> GetAllUsersWithRolesAsync();
-        Task<User> GetUserRolesByUserIdAsync(Guid userid);
+        Task<User> GetUserRolesByUserIdAsync(int userid);
     }
 }

@@ -14,9 +14,9 @@ namespace Application.Features.Roles.Queries
 {
     public class GetRolesByUserIdQuery : IRequest<DataResponse<IEnumerable<RoleDTO>>>
     {
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
 
-        public GetRolesByUserIdQuery(Guid userid)
+        public GetRolesByUserIdQuery(int userid)
         {
             UserId = userid;
         }

@@ -17,7 +17,7 @@ namespace Application.Features.Users.Commands
     public class ChangePasswordCommand : IRequest<IResponse>
     {
         [JsonIgnore]
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
         public string CurrentPassword { get; set; }
         public string NewPassword { get; set; }
         public string ConfirmPassword { get; set; }

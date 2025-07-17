@@ -8,6 +8,6 @@ namespace WebAPI.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
-        public Guid? UserId =>  new(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        public int? UserId => int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
     }
 }

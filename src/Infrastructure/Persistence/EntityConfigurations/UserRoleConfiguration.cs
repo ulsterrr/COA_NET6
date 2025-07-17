@@ -13,16 +13,16 @@ namespace Persistence.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<UserRole> builder)
         {
-            const string AdminRoleId = "43db034a-98cc-42ee-8fff-c57016484f4d";
-            const string DefaultAdminUserId = "6e5d8fa8-fa96-419f-9c07-3e05b96b087e";
+            const string AdminRoleId = "1";
+            const string DefaultAdminUserId = "1";
 
             builder.HasKey(ur => new { ur.UserId, ur.RoleId });
 
             builder.HasData(
                 new UserRole
                 {
-                    UserId = Guid.Parse(DefaultAdminUserId),
-                    RoleId = Guid.Parse(AdminRoleId)
+                    UserId = int.Parse(DefaultAdminUserId),
+                    RoleId = int.Parse(AdminRoleId)
                 });
         }
     }

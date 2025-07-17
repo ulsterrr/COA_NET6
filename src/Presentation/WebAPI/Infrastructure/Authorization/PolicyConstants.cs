@@ -18,5 +18,14 @@ namespace WebAPI.Infrastructure.Authorization
         public const string DepartmentCreate = "Department.Create";
         public const string DepartmentUpdate = "Department.Update";
         public const string DepartmentDelete = "Department.Delete";
+
+        // Organization policies
+        public const string OrganizationView = "Organization.View";
+
+        // Role policies
+        public const string RoleView = "Role.View";
+        public const string RoleCreate = "Role.Create";
+        public const string RoleUpdate = "Role.Update";
+        public const string RoleDelete = "Role.Delete";
     }
 }

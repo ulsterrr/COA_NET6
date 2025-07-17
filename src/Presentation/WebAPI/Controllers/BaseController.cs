@@ -9,5 +9,6 @@ namespace WebAPI.Controllers
     public class BaseController : ControllerBase
     {
         public int? UserId => int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        public string CurrentUser => new (HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
     }
 }

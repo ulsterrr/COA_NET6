@@ -18,6 +18,8 @@ namespace WebAPI.Infrastructure.Extensions
                         return controller.Ok(pagedDataResponse);
                     else if (response is ISuccessResponse successResponse)
                         return controller.Ok(successResponse);
+                    else if (response is IResponse result)
+                        return controller.Ok(result);
                     else
                     {
                         return controller.Ok();

@@ -3,8 +3,8 @@ using Application.Features.Users.Queries;
 using Application.Interfaces.Services;
 using Application.Wrappers.Abstract;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Infrastructure.Authorization;
 using WebAPI.Infrastructure.Extensions;
 
 namespace WebAPI.Controllers
@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [AppAuthorize]
         public async Task<IActionResult> GetAuthenticatedUserWithRolesAsync()
         {
             return this.FromResponse<IResponse>(await _mediator.Send(new GetAuthenticatedUserWithRolesQuery(UserId.Value)));

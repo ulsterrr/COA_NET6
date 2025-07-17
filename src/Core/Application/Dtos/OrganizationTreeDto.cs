@@ -6,6 +6,7 @@ namespace Application.Dtos
     {
         public List<BranchNode> Branches { get; set; }
         public List<DepartmentNode> Departments { get; set; }
+        public List<UserNode> Users { get; set; }
     }
 
     public class BranchNode
@@ -15,6 +16,12 @@ namespace Application.Dtos
     }
 
     public class DepartmentNode
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class UserNode
     {
         public int Id { get; set; }
         public string Name { get; set; }

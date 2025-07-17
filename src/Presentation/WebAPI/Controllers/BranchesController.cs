@@ -1,15 +1,16 @@
 using Application.Features.Branches.Commands;
 using Application.Features.Branches.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Infrastructure.Authorization;
+using WebAPI.Controllers;
 using WebAPI.Infrastructure.Authorization;
 
 namespace Presentation.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BranchesController : ControllerBase
+    public class BranchesController : BaseController
     {
         private readonly IMediator _mediator;
 
@@ -18,7 +19,7 @@ namespace Presentation.WebAPI.Controllers
             _mediator = mediator;
         }
 
-        [Authorize(Policy = PolicyConstants.BranchUpdate)]
+        [AppAuthorize(PolicyConstants.BranchUpdate)]
         [HttpPost("quickaddorupdate")]
         public async Task<IActionResult> QuickAddOrUpdateBranch([FromBody] QuickAddOrUpdateBranchCommand command)
         {
@@ -26,7 +27,7 @@ namespace Presentation.WebAPI.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = PolicyConstants.BranchView)]
+        [AppAuthorize(PolicyConstants.BranchView)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -34,7 +35,7 @@ namespace Presentation.WebAPI.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = PolicyConstants.BranchCreate)]
+        [AppAuthorize(PolicyConstants.BranchCreate)]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBranchCommand command)
         {
@@ -42,7 +43,7 @@ namespace Presentation.WebAPI.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = PolicyConstants.BranchUpdate)]
+        [AppAuthorize(PolicyConstants.BranchUpdate)]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateBranchCommand command)
         {
@@ -54,7 +55,7 @@ namespace Presentation.WebAPI.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = PolicyConstants.BranchDelete)]
+        [AppAuthorize(PolicyConstants.BranchDelete)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

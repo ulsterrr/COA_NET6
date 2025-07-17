@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Application.Interfaces.Services;
 using WebAPI.Infrastructure.Authorization;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Authorization
 {
@@ -9,7 +10,7 @@ namespace Infrastructure.Authorization
         private readonly DefaultAuthorizationPolicyProvider _fallbackPolicyProvider;
         private readonly ICacheService _cacheService;
 
-        public DynamicAuthorizationPolicyProvider(Microsoft.Extensions.Options.IOptions<AuthorizationOptions> options, ICacheService cacheService)
+        public DynamicAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options, ICacheService cacheService)
         {
             _fallbackPolicyProvider = new DefaultAuthorizationPolicyProvider(options);
             _cacheService = cacheService;

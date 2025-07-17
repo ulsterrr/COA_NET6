@@ -2,7 +2,6 @@
 using Application.Features.Users.Queries;
 using Application.Wrappers.Abstract;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Infrastructure.Authorization;
 using WebAPI.Infrastructure.Extensions;
@@ -20,22 +19,22 @@ namespace WebAPI.Controllers
             _mediator = mediator;
         }
 
-        [Authorize(Policy = PolicyConstants.UserUpdate)]
+        [AppAuthorize(PolicyConstants.UserUpdate)]
         [HttpPost("quickaddorupdate")]
-        public async Task<IActionResult> QuickAddOrUpdateUser([FromBody] Application.Features.Users.Commands.QuickAddOrUpdateUserCommand command)
+        public async Task<IActionResult> QuickAddOrUpdateUser([FromBody] QuickAddOrUpdateUserCommand command)
         {
             var response = await _mediator.Send(command);
             return Ok(response);
         }
 
-        [Authorize(Policy = "User.View")]
+        [AppAuthorize(PolicyConstants.UserView)]
         [HttpGet]
         public async Task<IActionResult> GetAllUsersWithRoles()
         {
             return this.FromResponse<IResponse>(await _mediator.Send(new GetAllUsersWithRolesQuery()));
         }
 
-        [Authorize(Policy = "User.View")]
+        [AppAuthorize(PolicyConstants.UserView)]
         [HttpGet("cached")]
         public async Task<IActionResult> GetAllUsersWithRolesCached()
         {
@@ -48,21 +47,21 @@ namespace WebAPI.Controllers
             return this.FromResponse<IResponse>(await _mediator.Send(new ConfirmEmailCommand(code)));
         }
 
-        [Authorize(Policy = "User.Update")]
+        [AppAuthorize(PolicyConstants.UserView)]
         [HttpPut("updateuserrole")]
         public async Task<IActionResult> UpdateUserRole(UpdateUserRoleCommand command)
         {
             return this.FromResponse<IResponse>(await _mediator.Send(command));
         }
 
-        [Authorize(Policy = "User.Update")]
+        [AppAuthorize(PolicyConstants.UserView)]
         [HttpPut("assignuserroles")]
         public async Task<IActionResult> AssignUserRoles(AssignUserRolesCommand command)
         {
             return this.FromResponse<IResponse>(await _mediator.Send(command));
         }
 
-        [Authorize]
+        [AppAuthorize]
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UpdateUserCommand command)
         {
@@ -70,7 +69,7 @@ namespace WebAPI.Controllers
             return this.FromResponse<IResponse>(await _mediator.Send(command));
         }
 
-        [Authorize]
+        [AppAuthorize]
         [HttpPost("changepassword")]
         public async Task<IActionResult> ChangePassword (ChangePasswordCommand command)
         {
@@ -78,7 +77,7 @@ namespace WebAPI.Controllers
             return this.FromResponse<IResponse>(await _mediator.Send(command));
         }
         
-        [Authorize]
+        [AppAuthorize]
         [HttpPost("changeemail")]
         public async Task<IActionResult> ChangeEmail(ChangeEmailCommand command)
         {
@@ -98,7 +97,7 @@ namespace WebAPI.Controllers
             return this.FromResponse<IResponse>(await _mediator.Send(new ResetPasswordCommand(code, email)));
         }
 
-        [Authorize(Policy = "User.Delete")]
+        [AppAuthorize(PolicyConstants.UserDelete)]
         [HttpDelete("{userid}")]
         public async Task<IActionResult> DeleteUser(int userid)
         {

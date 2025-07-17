@@ -9,7 +9,13 @@ namespace Application.Wrappers.Concrete
         public T Data { get; }
 
         public int StatusCode { get; }
-        public string Message { get; set; }
+        private string _message;
+
+        public string Message
+        {
+            get => _message ?? string.Empty;
+            set => _message = value;
+        }
 
         [JsonConstructor]
         public DataResponse(T data, int statuscode)

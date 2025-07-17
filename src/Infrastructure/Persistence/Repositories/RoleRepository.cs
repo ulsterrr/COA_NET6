@@ -40,5 +40,30 @@ namespace Persistence.Repositories
                 .Select(rp => rp.Permission)
                 .ToListAsync();
         }
+
+        public async Task AddPermissionToRoleAsync(int roleId, int permissionId)
+        {
+            var exists = await _context.RolePermissions.AnyAsync(rp => rp.RoleId == roleId && rp.PermissionId == permissionId);
+            if (!exists)
+            {
+                var rolePermission = new RolePermission
+                {
+                    RoleId = roleId,
+                    PermissionId = permissionId
+                };
+                await _context.RolePermissions.AddAsync(rolePermission);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemovePermissionFromRoleAsync(int roleId, int permissionId)
+        {
+            var rolePermission = await _context.RolePermissions.FirstOrDefaultAsync(rp => rp.RoleId == roleId && rp.PermissionId == permissionId);
+            if (rolePermission != null)
+            {
+                _context.RolePermissions.Remove(rolePermission);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

@@ -10,9 +10,13 @@ namespace Application.Wrappers.Concrete
     public class SuccessResponse : ISuccessResponse
     {
         public bool Success { get; } = true;
-        public string Message { get; }
+        private string _message;
+        public string Message
+        {
+            get => _message ?? string.Empty;
+            set => _message = value;
+        }
         public int StatusCode { get; }
-
 
         public SuccessResponse()
         {

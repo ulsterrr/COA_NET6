@@ -1,15 +1,15 @@
 using Application.Features.Departments.Commands;
 using Application.Features.Departments.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Controllers;
 using WebAPI.Infrastructure.Authorization;
 
 namespace Presentation.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DepartmentsController : ControllerBase
+    public class DepartmentsController : BaseController
     {
         private readonly IMediator _mediator;
 
@@ -18,7 +18,7 @@ namespace Presentation.WebAPI.Controllers
             _mediator = mediator;
         }
 
-        [Authorize(Policy = PolicyConstants.DepartmentUpdate)]
+        [AppAuthorize(PolicyConstants.DepartmentUpdate)]
         [HttpPost("quickaddorupdate")]
         public async Task<IActionResult> QuickAddOrUpdateDepartment([FromBody] QuickAddOrUpdateDepartmentCommand command)
         {
@@ -26,7 +26,7 @@ namespace Presentation.WebAPI.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = PolicyConstants.DepartmentView)]
+        [AppAuthorize(PolicyConstants.DepartmentView)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -34,7 +34,7 @@ namespace Presentation.WebAPI.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = PolicyConstants.DepartmentCreate)]
+        [AppAuthorize(PolicyConstants.DepartmentCreate)]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDepartmentCommand command)
         {
@@ -42,7 +42,7 @@ namespace Presentation.WebAPI.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = PolicyConstants.DepartmentUpdate)]
+        [AppAuthorize(PolicyConstants.DepartmentUpdate)]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateDepartmentCommand command)
         {
@@ -54,7 +54,7 @@ namespace Presentation.WebAPI.Controllers
             return Ok(response);
         }
 
-        [Authorize(Policy = PolicyConstants.DepartmentDelete)]
+        [AppAuthorize(PolicyConstants.DepartmentDelete)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

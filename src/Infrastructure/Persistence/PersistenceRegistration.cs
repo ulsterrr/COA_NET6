@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
+using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,8 @@ namespace Persistence
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IBranchRepository, BranchRepository>();
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         }
     }
 }

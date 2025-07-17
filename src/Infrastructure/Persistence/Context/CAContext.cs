@@ -21,10 +21,15 @@ namespace Persistence.Context
             base.OnModelCreating(modelBuilder);
         }
 
-
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<UserBranch> UserBranches { get; set; }
+        public DbSet<UserDepartment> UserDepartments { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace Infrastructure.Services
             _jwtSettings = jwtSettings.Value;
         }
 
-        public TokenDTO CreateToken(User user, List<string> roles)
+        public TokenDTO CreateToken(User user, List<string> roles, List<string> permissions)
         {
             var accessTokenExpiration = DateTime.Now.AddMinutes(_jwtSettings.AccessTokenExpiration);
             var refreshTokenExpiration = DateTime.Now.AddMinutes(_jwtSettings.RefreshTokenExpiration);
@@ -33,7 +33,7 @@ namespace Infrastructure.Services
                 audience: _jwtSettings.Audience[0],
                 expires: accessTokenExpiration,
                  notBefore: DateTime.Now,
-                 claims: GetClaims(user, _jwtSettings.Audience, roles),
+                 claims: GetClaims(user, _jwtSettings.Audience, roles, permissions),
                  signingCredentials: signingCredentials);
 
             var handler = new JwtSecurityTokenHandler();
@@ -51,7 +51,7 @@ namespace Infrastructure.Services
             return tokenDto;
         }
 
-        private IEnumerable<Claim> GetClaims(User user, List<string> audiences, List<string> roles)
+        private IEnumerable<Claim> GetClaims(User user, List<string> audiences, List<string> roles, List<string> permissions)
         {
             var claims = new List<Claim>
             {
@@ -63,6 +63,10 @@ namespace Infrastructure.Services
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            foreach (var permission in permissions)
+            {
+                claims.Add(new Claim("permission", permission));
             }
             claims.AddRange(audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));
             return claims;

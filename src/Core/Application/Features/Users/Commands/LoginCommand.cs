@@ -55,7 +55,9 @@ namespace Application.Features.Users.Commands
                 {
                     roleNames.Add(role.Name);
                 }
-                var tokendto = _tokenService.CreateToken(user, roleNames);
+                var permissionsEntities = await _roleRepository.GetPermissionsByUserIdAsync(user.Id);
+                var permissions = permissionsEntities.ToList();
+                var tokendto = _tokenService.CreateToken(user, roleNames, permissions);
                 var refreshToken = await _refreshTokenRepository.GetAsync(x => x.UserId == user.Id);
                 if (refreshToken == null)
                 {

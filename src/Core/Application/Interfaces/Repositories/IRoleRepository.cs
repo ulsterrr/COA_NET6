@@ -1,16 +1,13 @@
 ﻿using Application.Dtos;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Interfaces.Repositories
 {
     public interface IRoleRepository : IRepository<Role, int>
     {
         Task<IEnumerable<RoleDTO>> GetRolesByUserIdAsync(int userId);
+        Task<IEnumerable<Permission>> GetPermissionsByRoleIdAsync(int roleId);
+        Task<List<string>> GetPermissionsByUserIdAsync(int userId);
     }
 }
         

@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Services;
+﻿using Application.Interfaces.Repositories;
+using Application.Interfaces.Services;
 using Common.Settings;
 using Infrastructure.MqManager;
 using Infrastructure.Services;
@@ -17,9 +18,7 @@ namespace Infrastructure
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
             services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
-
             services.Configure<RabbitMQSettings>(configuration.GetSection("RabbitMQSettings"));
-
 
             services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
             services.AddSingleton<RabbitModelPooledObjectPolicy>();

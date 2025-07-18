@@ -27,6 +27,21 @@ namespace WebAPI.Controllers
             return Ok(response);
         }
 
+        [AppAuthorize(PolicyConstants.UserUpdate)]
+        [HttpPost("grantfullpermissions")]
+        public async Task<IActionResult> GrantFullPermissions([FromBody] int userId)
+        {
+            var result = await _mediator.Send(new GrantFullPermissionsCommand { UserId = userId });
+            if (result)
+            {
+                return Ok(new { message = "Full permissions granted successfully." });
+            }
+            else
+            {
+                return BadRequest(new { message = "Failed to grant full permissions. User may not have roles assigned." });
+            }
+        }
+
         [AppAuthorize(PolicyConstants.UserView)]
         [HttpGet]
         public async Task<IActionResult> GetAllUsersWithRoles()
@@ -104,5 +119,42 @@ namespace WebAPI.Controllers
             return this.FromResponse<IResponse>(await _mediator.Send(new RemoveUserCommand(userid)));
         }
 
+        [AppAuthorize(PolicyConstants.UserUpdate)]
+        [HttpPost("adduserpermissions")]
+        public async Task<IActionResult> AddUserPermissions([FromBody] AddUserPermissionCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result)
+            {
+                return Ok(new { message = "User permissions added successfully." });
+            }
+            else
+            {
+                return BadRequest(new { message = "Failed to add user permissions." });
+            }
+        }
+
+        [AppAuthorize(PolicyConstants.UserUpdate)]
+        [HttpPost("removeuserpermissions")]
+        public async Task<IActionResult> RemoveUserPermissions([FromBody] RemoveUserPermissionCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result)
+            {
+                return Ok(new { message = "User permissions removed successfully." });
+            }
+            else
+            {
+                return BadRequest(new { message = "Failed to remove user permissions." });
+            }
+        }
+
+        [AppAuthorize(PolicyConstants.UserView)]
+        [HttpGet("userpermissions/{userId}")]
+        public async Task<IActionResult> GetUserPermissions(int userId)
+        {
+            var permissions = await _mediator.Send(new Application.Features.Users.Queries.GetUserPermissionsQuery { UserId = userId });
+            return Ok(permissions);
+        }
     }
 }

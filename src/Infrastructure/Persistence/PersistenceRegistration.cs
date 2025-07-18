@@ -26,6 +26,7 @@ namespace Persistence
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBranchRepository, BranchRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
         }
     }
 }

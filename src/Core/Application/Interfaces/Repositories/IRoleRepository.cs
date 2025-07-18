@@ -7,6 +7,7 @@ namespace Application.Interfaces.Repositories
 {
     public interface IRoleRepository : IRepository<Role, int>
     {
+        Task AddPermissionsToRoleAsync(int roleId, List<string> permissionNames);
         Task<IEnumerable<RoleDTO>> GetRolesByUserIdAsync(int userId);
         Task<List<string>> GetPermissionsByUserIdAsync(int userId);
         Task<IEnumerable<Permission>> GetPermissionsByRoleIdAsync(int roleId);

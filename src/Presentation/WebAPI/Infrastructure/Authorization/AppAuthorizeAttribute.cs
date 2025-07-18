@@ -2,6 +2,7 @@ using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace WebAPI.Infrastructure.Authorization
@@ -24,9 +25,11 @@ namespace WebAPI.Infrastructure.Authorization
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
+            var logger = context.HttpContext.RequestServices.GetService<ILogger<AppAuthorizeAttribute>>();
             var user = context.HttpContext.User;
             if (user == null || !user.Identity.IsAuthenticated)
             {
+                logger?.LogWarning("Unauthorized access attempt: user not authenticated.");
                 context.Result = new UnauthorizedResult();
                 return;
             }
@@ -36,6 +39,7 @@ namespace WebAPI.Infrastructure.Authorization
 
             if (roleRepository == null || cacheService == null)
             {
+                logger?.LogError("RoleRepository or CacheService not available in DI container.");
                 context.Result = new ForbidResult();
                 return;
             }
@@ -43,6 +47,7 @@ namespace WebAPI.Infrastructure.Authorization
             var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
+                logger?.LogWarning("Unauthorized access attempt: user ID claim missing.");
                 context.Result = new ForbidResult();
                 return;
             }
@@ -53,7 +58,24 @@ namespace WebAPI.Infrastructure.Authorization
 
             if (userPermissions == null)
             {
-                userPermissions = await roleRepository.GetPermissionsByUserIdAsync(userId);
+                // Get role permissions
+                var rolePermissions = await roleRepository.GetPermissionsByUserIdAsync(userId);
+
+                // Get user-specific permissions
+                var userPermissionRepository = context.HttpContext.RequestServices.GetService<IUserPermissionRepository>();
+                var userSpecificPermissions = new List<string>();
+                if (userPermissionRepository != null)
+                {
+                    var userPermissionsEntities = await userPermissionRepository.GetPermissionsByUserIdAsync(userId);
+                    if (userPermissionsEntities != null)
+                    {
+                        userSpecificPermissions = userPermissionsEntities.Select(p => p.Name).ToList();
+                    }
+                }
+
+                // Combine role and user-specific permissions
+                userPermissions = rolePermissions != null ? rolePermissions.Union(userSpecificPermissions).Distinct().ToList() : userSpecificPermissions;
+
                 if (userPermissions != null)
                 {
                     await cacheService.SetAsync(cacheKey, userPermissions, TimeSpan.FromMinutes(30));
@@ -62,6 +84,7 @@ namespace WebAPI.Infrastructure.Authorization
 
             if (userPermissions == null)
             {
+                logger?.LogWarning("Unauthorized access attempt: user permissions not found for userId {UserId}.", userId);
                 context.Result = new ForbidResult();
                 return;
             }
@@ -84,7 +107,16 @@ namespace WebAPI.Infrastructure.Authorization
 
             if (!authorized)
             {
-                context.Result = new ForbidResult();
+                var missingPermissions = RequireAll
+                    ? _requiredPermissions.Except(userPermissions).ToArray()
+                    : _requiredPermissions.Where(rp => !userPermissions.Contains(rp)).ToArray();
+
+                logger?.LogWarning("Unauthorized access attempt by userId {UserId}. Missing permissions: {MissingPermissions}", userId, string.Join(", ", missingPermissions));
+
+                context.Result = new ObjectResult(new { message = "You do not have the required permissions to access this resource.", missingPermissions })
+                {
+                    StatusCode = 403
+                };
                 return;
             }
         }

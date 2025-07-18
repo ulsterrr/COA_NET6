@@ -42,5 +42,13 @@ namespace Persistence.Repositories
                 Roles = user.UserRoles.Select(ur => ur.Role.Name).ToList()
             }).FirstOrDefaultAsync(user => user.Id == userid);
         }
+
+        public async Task<List<Role>> GetUserRolesAsync(int userId)
+        {
+            return await _context.UserRoles
+                .Where(ur => ur.UserId == userId)
+                .Select(ur => ur.Role)
+                .ToListAsync();
+        }
     }
 }

@@ -1,3 +1,6 @@
+using System.ComponentModel;
+using System.Reflection;
+
 namespace WebAPI.Infrastructure.Authorization
 {
     public static class PolicyConstants
@@ -27,5 +30,18 @@ namespace WebAPI.Infrastructure.Authorization
         public const string RoleCreate = "Role.Create";
         public const string RoleUpdate = "Role.Update";
         public const string RoleDelete = "Role.Delete";
+
+        public static IDictionary<string, string> GetPermissions()
+        {
+            return typeof(PolicyConstants)
+                .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                .Where(f => f.IsLiteral && !f.IsInitOnly)
+                .Select(f => new
+                {
+                    Key = f.GetValue(null).ToString(),
+                    Description = f.GetCustomAttribute<DescriptionAttribute>()?.Description ?? "lorem ipsum dolor sit amet"
+                })
+                .ToDictionary(f => f.Key, f => f.Description);
+        }
     }
 }

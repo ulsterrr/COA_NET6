@@ -1,5 +1,5 @@
-using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
@@ -34,12 +34,24 @@ namespace WebAPI.Infrastructure.Authorization
                 return;
             }
 
-            var roleRepository = context.HttpContext.RequestServices.GetService<IRoleRepository>();
-            var cacheService = context.HttpContext.RequestServices.GetService<ICacheService>();
-
-            if (roleRepository == null || cacheService == null)
+            // If user has role "Admin", they are automatically authorized
+            if (user.IsInRole("Admin"))
             {
-                logger?.LogError("RoleRepository or CacheService not available in DI container.");
+                // User is admin, allow access
+                return;
+            }
+
+            // If no required permissions specified, only check authentication
+            if (_requiredPermissions == null || _requiredPermissions.Length == 0)
+            {
+                // User is authenticated, allow access
+                return;
+            }
+
+            var permissionService = context.HttpContext.RequestServices.GetService<IPermissionService>();
+            if (permissionService == null)
+            {
+                logger?.LogError("PermissionService not available in DI container.");
                 context.Result = new ForbidResult();
                 return;
             }
@@ -53,36 +65,9 @@ namespace WebAPI.Infrastructure.Authorization
             }
 
             var userId = int.Parse(userIdClaim.Value);
-            var cacheKey = $"UserPermissions_{userId}";
-            var userPermissions = await cacheService.GetAsync<List<string>>(cacheKey);
+            var userPermissions = await permissionService.GetUserPermissionsAsync(userId);
 
-            if (userPermissions == null)
-            {
-                // Get role permissions
-                var rolePermissions = await roleRepository.GetPermissionsByUserIdAsync(userId);
-
-                // Get user-specific permissions
-                var userPermissionRepository = context.HttpContext.RequestServices.GetService<IUserPermissionRepository>();
-                var userSpecificPermissions = new List<string>();
-                if (userPermissionRepository != null)
-                {
-                    var userPermissionsEntities = await userPermissionRepository.GetPermissionsByUserIdAsync(userId);
-                    if (userPermissionsEntities != null)
-                    {
-                        userSpecificPermissions = userPermissionsEntities.Select(p => p.Name).ToList();
-                    }
-                }
-
-                // Combine role and user-specific permissions
-                userPermissions = rolePermissions != null ? rolePermissions.Union(userSpecificPermissions).Distinct().ToList() : userSpecificPermissions;
-
-                if (userPermissions != null)
-                {
-                    await cacheService.SetAsync(cacheKey, userPermissions, TimeSpan.FromMinutes(30));
-                }
-            }
-
-            if (userPermissions == null)
+            if (userPermissions == null || userPermissions.Count == 0)
             {
                 logger?.LogWarning("Unauthorized access attempt: user permissions not found for userId {UserId}.", userId);
                 context.Result = new ForbidResult();
@@ -97,12 +82,6 @@ namespace WebAPI.Infrastructure.Authorization
             else
             {
                 authorized = _requiredPermissions.Any(rp => userPermissions.Contains(rp));
-            }
-
-            // If user has role "Admin", they are automatically authorized
-            if (user.IsInRole("Admin"))
-            {
-                authorized = true;
             }
 
             if (!authorized)

@@ -10,6 +10,10 @@ namespace Persistence.EntityConfigurations
         {
             builder.HasKey(rp => new { rp.RoleId, rp.PermissionId });
 
+            builder.Property(rp => rp.LevelData)
+                .HasMaxLength(100)
+                .IsRequired(false);
+
             builder.HasOne(rp => rp.Role)
                 .WithMany(r => r.RolePermissions)
                 .HasForeignKey(rp => rp.RoleId);

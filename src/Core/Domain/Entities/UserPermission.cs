@@ -9,5 +9,7 @@ namespace Domain.Entities
 
         public int PermissionId { get; set; }
         public Permission Permission { get; set; }
+
+        public string LevelData { get; set; }
     }
 }

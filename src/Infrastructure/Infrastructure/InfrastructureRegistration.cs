@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
+using Application.Services;
 using Common.Settings;
 using Infrastructure.MqManager;
 using Infrastructure.Services;
@@ -15,6 +16,8 @@ namespace Infrastructure
         {
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IPermissionService, PermissionService>();
+
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
             services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
